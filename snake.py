@@ -1,36 +1,40 @@
 import pygame
 import random as rd
 
-pygame.init()
-clock = pygame.time.Clock()
 (width,height) = (640,360)
 side = 20
 X = width//side
 Y = height//side
-screen = pygame.display.set_mode((width,height))
+framerate = 60
 lightg = (170,215,81)
 darkg = (162,209,73)
 blue = (70,116,233)
 red = (231,71,29)
 flag = True
-snake = [(6,5),(5,5),(4,5)]
-dir = 'stop'
-eaten = True
-xf = 0
-yf = 0
-framerate = 60
-adv = 0
-screen.fill(lightg)
-for i in range(X) :
-        for j in range(Y) :
-            if (i+j+1)%2 :
-                sq = pygame.Rect(side*i,side*j,side,side)
-                pygame.draw.rect(screen,darkg,sq)
-for p in snake :
-    sq = pygame.Rect(side*p[0],side*p[1],side,side)
-    pygame.draw.rect(screen,blue,sq)
+lost = True
+
+pygame.init()
+clock = pygame.time.Clock()
+screen = pygame.display.set_mode((width,height))
 
 while flag :
+    if lost :
+        screen.fill(lightg)
+        for i in range(X) :
+            for j in range(Y) :
+                if (i+j+1)%2 :
+                    sq = pygame.Rect(side*i,side*j,side,side)
+                    pygame.draw.rect(screen,darkg,sq)
+        snake = [(6,5),(5,5),(4,5)]
+        dir = 'stop'
+        eaten = True
+        xf = 0
+        yf = 0
+        adv = 0
+        lost = False
+        for p in snake :
+            sq = pygame.Rect(side*p[0],side*p[1],side,side)
+            pygame.draw.rect(screen,blue,sq)
     adv += 1
     for event in pygame.event.get() :
         if event.type == pygame.KEYDOWN :
@@ -48,6 +52,8 @@ while flag :
                 dir = 'down'
             if event.key == pygame.K_p :
                 dir = 'stop'
+            if event.key == pygame.K_r :
+                lost = True
     head = snake[0]
     headinsnake = 0
     for sqr in snake :
@@ -56,17 +62,17 @@ while flag :
         if sqr == head :
             headinsnake += 1
     if headinsnake > 1 :
-        flag = False
+        lost = True
     if head[0] < 0 or head[0] > X-1 :
-        flag = False
+        lost = True
     if head[1] < 0 or head[1] > Y-1 :
-        flag = False
+        lost = True
     if eaten :
         xf = rd.randint(0,X-1)
         yf = rd.randint(0,Y-1)
         fruit = pygame.Rect(side*xf,side*yf,side,side)
         pygame.draw.rect(screen,red,fruit)
-    if adv > 5 or eaten :
+    if adv >= framerate//10 or eaten :
         adv = 0
         if dir == 'right' :
             snake = [(head[0]+1,head[1])]+snake
