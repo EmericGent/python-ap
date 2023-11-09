@@ -12,6 +12,7 @@ blue = (70,116,233)
 red = (231,71,29)
 flag = True
 lost = True
+dif = 10
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -54,6 +55,13 @@ while flag :
                 dir = 'stop'
             if event.key == pygame.K_r :
                 lost = True
+            if dir == 'stop' :
+                if event.key == pygame.K_i :
+                    dif = 7
+                if event.key == pygame.K_j :
+                    dif = 10
+                if event.key == pygame.K_k :
+                    dif = 20
     head = snake[0]
     headinsnake = 0
     for sqr in snake :
@@ -72,7 +80,7 @@ while flag :
         yf = rd.randint(0,Y-1)
         fruit = pygame.Rect(side*xf,side*yf,side,side)
         pygame.draw.rect(screen,red,fruit)
-    if adv >= framerate//10 or eaten :
+    if adv >= framerate//dif or eaten :
         adv = 0
         if dir == 'right' :
             snake = [(head[0]+1,head[1])]+snake
