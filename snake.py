@@ -46,6 +46,8 @@ while flag :
                 dir = 'left'
             if event.key == pygame.K_DOWN :
                 dir = 'down'
+            if event.key == pygame.K_p :
+                dir = 'stop'
     head = snake[0]
     headinsnake = 0
     for sqr in snake :
