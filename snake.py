@@ -3,7 +3,7 @@ import random as rd
 
 pygame.init()
 clock = pygame.time.Clock()
-(width,height) = (500,250)
+(width,height) = (1000,500)
 side = 20
 X = width//side
 Y = height//side
@@ -16,8 +16,8 @@ flag = True
 snake = [(6,5),(5,5),(4,5)]
 dir = 1
 eaten = False
-xf = rd.randint(0,X)
-yf = rd.randint(0,Y)
+xf = rd.randint(0,X-1)
+yf = rd.randint(0,Y-1)
 framerate = 60
 adv = 0
 screen.fill(white)
@@ -29,6 +29,7 @@ for i in range(X) :
 for p in snake :
     sq = pygame.Rect(side*p[0],side*p[1],side,side)
     pygame.draw.rect(screen,green,sq)
+
 while flag :
     adv += 1
     for event in pygame.event.get() :
@@ -44,7 +45,7 @@ while flag :
             if event.key == pygame.K_LEFT :
                 dir = 3
             if event.key == pygame.K_DOWN :
-                dir = 4
+                dir = 4    
     if (xf,yf) in snake :
         eaten = True
     if eaten :
@@ -73,12 +74,9 @@ while flag :
             tail = snake.pop()
             checker = pygame.Rect(side*tail[0],side*tail[1],side,side)
             if (tail[0]+tail[1]+1)%2 :
-                pygame.draw.rect(screen,black,check)
+                pygame.draw.rect(screen,black,checker)
             else :
-                pygame.draw.rect(screen,white,check)
-#    for p in snake :
-#        sq = pygame.Rect(side*p[0],side*p[1],side,side)
-#        pygame.draw.rect(screen,green,sq)
+                pygame.draw.rect(screen,white,checker)
     newsq = pygame.Rect(side*head[0],side*head[1],side,side)
     pygame.draw.rect(screen,green,newsq)
     eaten = False
