@@ -14,7 +14,7 @@ blue = (70,116,233)
 red = (231,71,29)
 flag = True
 snake = [(6,5),(5,5),(4,5)]
-dir = 'right'
+dir = 'stop'
 eaten = True
 xf = 0
 yf = 0
@@ -74,7 +74,7 @@ while flag :
             snake = [(head[0]-1,head[1])]+snake
         if dir == 'down' :
             snake = [(head[0],head[1]+1)]+snake
-        if not eaten :
+        if not eaten and dir != 'stop' :
             tail = snake.pop()
             checker = pygame.Rect(side*tail[0],side*tail[1],side,side)
             if (tail[0]+tail[1]+1)%2 :
