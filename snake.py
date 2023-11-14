@@ -12,6 +12,7 @@ parser.add_argument('--fruit_color', type = str, default = (231,71,29), help="Co
 parser.add_argument('--snake_color', type = str, default = (70,116,233),  help="Color of the snake")
 parser.add_argument('--snake_length', type = int, default = 3, help="Initial lenght of the snake")
 parser.add_argument('--tile_size', type = int, default = 20, help="Size of the tile")
+parser.add_argument('--difficulty', type = str, default = 'normal', help="Difficulty of the game")
 args = parser.parse_args()
 
 if args.height%args.tile_size :
@@ -32,6 +33,8 @@ if args.snake_length < 2 :
     raise ValueError("The snake is too short")
 if args.snake_length > args.width//args.tile_size-8 :
     raise ValueError("The snake is too long")
+if args.difficulty != 'easy' and args.difficulty != 'normal' and args.difficulty != 'hard' :
+    raise ValueError("Difficulty must be 'easy', 'normal' or 'hard'")
 
 X = args.width//args.tile_size
 Y = args.height//args.tile_size
@@ -39,7 +42,12 @@ flag = True
 lost = True
 snake = []
 highscore = 0
-dif = 10
+if args.difficulty == 'easy' :
+    dif = 7
+elif args.difficulty == 'hard' :
+    dif = 20
+else :
+    dif = 10
 
 pygame.init()
 CLOCK = pygame.time.Clock()
@@ -86,13 +94,6 @@ while flag :
                 dir = 'stop'
             if event.key == pygame.K_r :
                 lost = True
-            if dir == 'stop' :
-                if event.key == pygame.K_i :
-                    dif = 7
-                if event.key == pygame.K_j :
-                    dif = 10
-                if event.key == pygame.K_k :
-                    dif = 20
     #on parcourt le serpent pour savoir si la tête ou le fruit est dans le serpent
     head = snake[0]
     headinsnake = 0
@@ -115,7 +116,7 @@ while flag :
         fruit = pygame.Rect(args.tile_size*xf,args.tile_size*yf,args.tile_size,args.tile_size)
         pygame.draw.rect(SCREEN,args.fruit_color,fruit)
     #on ne fait avancer le serpent qu à certaines frames
-    #pour avoir 60 tick/s pour capter les inputs mais 
+    #pour avoir 60 tick/s (de base) pour capter les inputs mais 
     #avoir un serpent qui avance à une vitesse raisonnable
     #et on change la couleur des carrés qui évoluent
     adv += 1
