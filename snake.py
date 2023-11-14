@@ -4,17 +4,17 @@ import random as rd
 
 #permet de prendre des arguments et de les traiter
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('--bg_color_1', type = str, default = (170,215,81), help="The first color of the background")
-parser.add_argument('--bg_color_2', type = str, default = (162,209,73), help="The second color of the background")
+parser.add_argument('--bg-color-1', type = str, default = (170,215,81), help="The first color of the background")
+parser.add_argument('--bg-color-2', type = str, default = (162,209,73), help="The second color of the background")
 parser.add_argument('--height', type = int, default = 360, help="Height of the game screen")
 parser.add_argument('--width', type = int, default = 640, help="Width of the game screen")
 parser.add_argument('--fps', type = int, default = 60, help="Framerate of the Game")
-parser.add_argument('--fruit_color', type = str, default = (231,71,29), help="Color of the fruit")
-parser.add_argument('--snake_color', type = str, default = (70,116,233),  help="Color of the snake")
-parser.add_argument('--snake_length', type = int, default = 3, help="Initial lenght of the snake")
-parser.add_argument('--tile_size', type = int, default = 20, help="Size of the tile")
+parser.add_argument('--fruit-color', type = str, default = (231,71,29), help="Color of the fruit")
+parser.add_argument('--snake-color', type = str, default = (70,116,233),  help="Color of the snake")
+parser.add_argument('--snake-length', type = int, default = 3, help="Initial lenght of the snake")
+parser.add_argument('--tile-size', type = int, default = 20, help="Size of the tile")
 parser.add_argument('--difficulty', type = str, default = 'normal', help="Difficulty of the game")
-parser.add_argument('--gameover_on_exit', help="This argument makes the player lose when hitting the walls", action = 'store_true')
+parser.add_argument('--gameover-on-exit', help="This argument makes the player lose when hitting the walls", action = 'store_true')
 args = parser.parse_args()
 
 if args.height%args.tile_size :
