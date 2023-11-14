@@ -2,6 +2,7 @@ import argparse
 import pygame
 import random as rd
 
+#permet de prendre des arguments et de les traiter
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('--bg_color_1', type = str, default = (170,215,81), help="The first color of the background")
 parser.add_argument('--bg_color_2', type = str, default = (162,209,73), help="The second color of the background")
@@ -13,7 +14,7 @@ parser.add_argument('--snake_color', type = str, default = (70,116,233),  help="
 parser.add_argument('--snake_length', type = int, default = 3, help="Initial lenght of the snake")
 parser.add_argument('--tile_size', type = int, default = 20, help="Size of the tile")
 parser.add_argument('--difficulty', type = str, default = 'normal', help="Difficulty of the game")
-parser.add_argument('--gameover_on_exit', type = bool, default = True, help="Allow to choose between the two modes (True is for having walls)")
+parser.add_argument('--gameover_on_exit', help="This argument makes the player lose when hitting the walls", action = 'store_true')
 args = parser.parse_args()
 
 if args.height%args.tile_size :
@@ -37,18 +38,19 @@ if args.snake_length > args.width//args.tile_size-8 :
 if args.difficulty != 'easy' and args.difficulty != 'normal' and args.difficulty != 'hard' :
     raise ValueError("Difficulty must be 'easy', 'normal' or 'hard'")
 
-X = args.width//args.tile_size
-Y = args.height//args.tile_size
-flag = True
-lost = True
-snake = []
-highscore = 0
 if args.difficulty == 'easy' :
     dif = 7
 elif args.difficulty == 'hard' :
     dif = 20
 else :
     dif = 10
+
+X = args.width//args.tile_size
+Y = args.height//args.tile_size
+flag = True
+lost = True
+snake = []
+highscore = 0
 
 pygame.init()
 CLOCK = pygame.time.Clock()
@@ -76,7 +78,7 @@ while flag :
             sq = pygame.Rect(args.tile_size*p[0],args.tile_size*p[1],args.tile_size,args.tile_size)
             pygame.draw.rect(SCREEN,args.snake_color,sq)
     #ce bloc permet de réagir au inputs : dans l'ordre : quitter le jeu,
-    #changer de direction, faire pause, changer la difficulté (plus dif est grand, plus le jeu est dur)
+    #changer de direction, faire pause, recommencer
     for event in pygame.event.get() :
         if event.type == pygame.KEYDOWN :
             if event.key == pygame.K_q :
@@ -110,13 +112,13 @@ while flag :
         lost = True
     if head[1] < 0 or head[1] > Y-1 :
         lost = True
-    #on allonge le serpent si jamais un fruit est mangé
+    #on crée un nouveau fruit si jamais un fruit est mangé
     if eaten :
         xf = rd.randint(0,X-1)
         yf = rd.randint(0,Y-1)
         fruit = pygame.Rect(args.tile_size*xf,args.tile_size*yf,args.tile_size,args.tile_size)
         pygame.draw.rect(SCREEN,args.fruit_color,fruit)
-    #on ne fait avancer le serpent qu à certaines frames
+    #on ne fait avancer le serpent (selon le mode) qu à certaines frames
     #pour avoir 60 tick/s (de base) pour capter les inputs mais 
     #avoir un serpent qui avance à une vitesse raisonnable
     #et on change la couleur des carrés qui évoluent
@@ -141,6 +143,7 @@ while flag :
                 snake = [((head[0]-1)%X,head[1])]+snake
             if dir == 'down' :
                 snake = [(head[0],(head[1]+1)%Y)]+snake
+        #on traite ici l éventuel l allongement du serpent
         if not eaten and dir != 'stop' :
             tail = snake.pop()
             checker = pygame.Rect(args.tile_size*tail[0],args.tile_size*tail[1],args.tile_size,args.tile_size)
