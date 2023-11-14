@@ -1,31 +1,36 @@
 import pygame
 import random as rd
 
-(width,height) = (640,360)
-side = 20
-X = width//side
-Y = height//side
-framerate = 60
-lightg = (170,215,81)
-darkg = (162,209,73)
-blue = (70,116,233)
-red = (231,71,29)
+(WIDTH,HEIGHT) = (640,360)
+SIDE = 20
+X = WIDTH//SIDE
+Y = HEIGHT//SIDE
+FRAMERATE = 60
+LIGHTG = (170,215,81)
+DARKG = (162,209,73)
+BLUE = (70,116,233)
+RED = (231,71,29)
 flag = True
 lost = True
+snake = []
+highscore = 0
 dif = 10
 
 pygame.init()
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((width,height))
+CLOCK = pygame.time.Clock()
+SCREEN = pygame.display.set_mode((WIDTH,HEIGHT))
 
 while flag :
+    #ce bloc permet de reset le jeu quand le joueur perd
     if lost :
-        screen.fill(lightg)
+        SCREEN.fill(LIGHTG)
         for i in range(X) :
             for j in range(Y) :
                 if (i+j+1)%2 :
-                    sq = pygame.Rect(side*i,side*j,side,side)
-                    pygame.draw.rect(screen,darkg,sq)
+                    sq = pygame.Rect(SIDE*i,SIDE*j,SIDE,SIDE)
+                    pygame.draw.rect(SCREEN,DARKG,sq)
+        if highscore < len(snake) :
+            highscore = len(snake)
         snake = [(6,5),(5,5),(4,5)]
         dir = 'stop'
         eaten = True
@@ -34,9 +39,10 @@ while flag :
         adv = 0
         lost = False
         for p in snake :
-            sq = pygame.Rect(side*p[0],side*p[1],side,side)
-            pygame.draw.rect(screen,blue,sq)
-    adv += 1
+            sq = pygame.Rect(SIDE*p[0],SIDE*p[1],SIDE,SIDE)
+            pygame.draw.rect(SCREEN,BLUE,sq)
+    #ce bloc permet de réagir au inputs : dans l'ordre : quitter le jeu,
+    #changer de direction, faire pause, changer la difficulté (plus dif est grand, plus le jeu est dur)
     for event in pygame.event.get() :
         if event.type == pygame.KEYDOWN :
             if event.key == pygame.K_q :
@@ -62,6 +68,7 @@ while flag :
                     dif = 10
                 if event.key == pygame.K_k :
                     dif = 20
+    #on parcourt le serpent pour savoir si la tête ou le fruit est dans le serpent
     head = snake[0]
     headinsnake = 0
     for sqr in snake :
@@ -69,18 +76,25 @@ while flag :
             eaten = True
         if sqr == head :
             headinsnake += 1
+    #on arrête le jeu si jamais une des conditions de mort est remplie
     if headinsnake > 1 :
         lost = True
     if head[0] < 0 or head[0] > X-1 :
         lost = True
     if head[1] < 0 or head[1] > Y-1 :
         lost = True
+    #on allonge le serpent si jamais un fruit est mangé
     if eaten :
         xf = rd.randint(0,X-1)
         yf = rd.randint(0,Y-1)
-        fruit = pygame.Rect(side*xf,side*yf,side,side)
-        pygame.draw.rect(screen,red,fruit)
-    if adv >= framerate//dif or eaten :
+        fruit = pygame.Rect(SIDE*xf,SIDE*yf,SIDE,SIDE)
+        pygame.draw.rect(SCREEN,RED,fruit)
+    #on ne fait avancer le serpent qu à certaines frames
+    #pour avoir 60 tick/s pour capter les inputs mais 
+    #avoir un serpent qui avance à une vitesse raisonnable
+    #et on change la couleur des carrés qui évoluent
+    adv += 1
+    if adv >= FRAMERATE//dif or eaten :
         adv = 0
         if dir == 'right' :
             snake = [(head[0]+1,head[1])]+snake
@@ -92,15 +106,16 @@ while flag :
             snake = [(head[0],head[1]+1)]+snake
         if not eaten and dir != 'stop' :
             tail = snake.pop()
-            checker = pygame.Rect(side*tail[0],side*tail[1],side,side)
+            checker = pygame.Rect(SIDE*tail[0],SIDE*tail[1],SIDE,SIDE)
             if (tail[0]+tail[1]+1)%2 :
-                pygame.draw.rect(screen,darkg,checker)
+                pygame.draw.rect(SCREEN,DARKG,checker)
             else :
-                pygame.draw.rect(screen,lightg,checker)
-    newsq = pygame.Rect(side*head[0],side*head[1],side,side)
-    pygame.draw.rect(screen,blue,newsq)
+                pygame.draw.rect(SCREEN,LIGHTG,checker)
+    newsq = pygame.Rect(SIDE*head[0],SIDE*head[1],SIDE,SIDE)
+    pygame.draw.rect(SCREEN,BLUE,newsq)
     eaten = False
-    clock.tick(framerate)
+    CLOCK.tick(FRAMERATE)
+    pygame.display.set_caption('Score '+str(len(snake))+' Highscore '+str(highscore))
     pygame.display.update()
 
 pygame.quit()
