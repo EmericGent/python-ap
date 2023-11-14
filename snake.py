@@ -13,6 +13,7 @@ parser.add_argument('--snake_color', type = str, default = (70,116,233),  help="
 parser.add_argument('--snake_length', type = int, default = 3, help="Initial lenght of the snake")
 parser.add_argument('--tile_size', type = int, default = 20, help="Size of the tile")
 parser.add_argument('--difficulty', type = str, default = 'normal', help="Difficulty of the game")
+parser.add_argument('--gameover_on_exit', type = bool, default = True, help="Allow to choose between the two modes (True is for having walls)")
 args = parser.parse_args()
 
 if args.height%args.tile_size :
@@ -122,14 +123,24 @@ while flag :
     adv += 1
     if adv >= args.fps//dif or eaten :
         adv = 0
-        if dir == 'right' :
-            snake = [(head[0]+1,head[1])]+snake
-        if dir == 'up' :
-            snake = [(head[0],head[1]-1)]+snake
-        if dir == 'left' :
-            snake = [(head[0]-1,head[1])]+snake
-        if dir == 'down' :
-            snake = [(head[0],head[1]+1)]+snake
+        if args.gameover_on_exit :
+            if dir == 'right' :
+                snake = [(head[0]+1,head[1])]+snake
+            if dir == 'up' :
+                snake = [(head[0],head[1]-1)]+snake
+            if dir == 'left' :
+                snake = [(head[0]-1,head[1])]+snake
+            if dir == 'down' :
+                snake = [(head[0],head[1]+1)]+snake
+        else :
+            if dir == 'right' :
+                snake = [((head[0]+1)%X,head[1])]+snake
+            if dir == 'up' :
+                snake = [(head[0],(head[1]-1)%Y)]+snake
+            if dir == 'left' :
+                snake = [((head[0]-1)%X,head[1])]+snake
+            if dir == 'down' :
+                snake = [(head[0],(head[1]+1)%Y)]+snake
         if not eaten and dir != 'stop' :
             tail = snake.pop()
             checker = pygame.Rect(args.tile_size*tail[0],args.tile_size*tail[1],args.tile_size,args.tile_size)
