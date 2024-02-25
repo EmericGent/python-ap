@@ -125,7 +125,7 @@ while flag :
     adv += 1
     if adv >= args.fps//dif or eaten :
         adv = 0
-        if args.gameover_on_exit :
+        if True :
             if dir == 'right' :
                 snake = [(head[0]+1,head[1])]+snake
             if dir == 'up' :
